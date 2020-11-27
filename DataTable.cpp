@@ -26,17 +26,6 @@ DataTable::~DataTable() {
     delete[] data;
 };
 
-void DataTable::GenerateFreqTable() {
-    std::fstream fh;
-    fh.open("/Users/nimesh/Documents/Classes/FALL20/Project/sample_input_small.txt", std::ios::in);
-    while (fh.is_open() && !fh.eof()) {
-        int key;
-        fh >> key;
-        this->Insert(key);
-    }
-    fh.close();
-}
-
 void DataTable::SortTable(int* index, int* value) const {
     int count = 0;
     

@@ -2,7 +2,7 @@
 //  Huffman.cpp
 //  NimeshPok_Project1
 //
-//  Created by Nimesh Pokhrel on 11/26/20.
+//  Created by Nimesh Pokhrel on 11/25/20.
 //  Copyright © 2020 Nimesh Pokhrel. All rights reserved.
 //
 
@@ -17,7 +17,7 @@ Node::Node() {
 
 Node::~Node() {}
 
-/* *************************************************** HUFFMAN_BINARYHEAP *************************************************** */
+/* *************************************************** HUFFMAN CODE USING BINARYHEAP *************************************************** */
 
 Huffman_BinaryHeap::Huffman_BinaryHeap(int len) {
     length = len;
@@ -32,7 +32,7 @@ Huffman_BinaryHeap::~Huffman_BinaryHeap() {
     }
 }
 
-void Huffman_BinaryHeap::BuildTree(Node** extNode) {
+void Huffman_BinaryHeap::HuffmanTree(Node** extNode) {
     internalNode = new Node* [length];
     for (int i=0; i<length; i++) internalNode[i] = new Node();
 
@@ -63,8 +63,45 @@ void Huffman_BinaryHeap::BuildTree(Node** extNode) {
     internalNode[j]->left = internalNode[count++];
     internalNode[j]->right = internalNode[count++];
     internalNode[j]->freq = internalNode[j]->left->freq + internalNode[j]->right->freq;
+    
+    root = internalNode[j];
 
-    if (j+1 != length) throw "Inside Huffman_BinaryHeap::BuildTree()... Internal node count mismatch!";
+    //if (j+1 != length) throw "Inside Huffman_BinaryHeap::HuffmanTree()... Internal node count mismatch!";
+}
+
+int Huffman_BinaryHeap::HuffmanCode(Node* current, Node* target, std::string code) {
+    
+    current->HuffmanCode = new char[code.length()+1];
+    std::size_t length = code.copy(current->HuffmanCode, code.length(), 0);
+    current->HuffmanCode[length]='\0';
+
+    if (current == target) {
+        // Found target
+        return 1;
+    }
+
+    // Check if end-node
+    if (current->LeftChild() == NULL && current->RightChild() == NULL) {
+        // Is an end node
+        return -1;
+    }
+
+    // Try left
+    int left = HuffmanCode(current->LeftChild(), target, code + "0");
+
+    // Try right
+    int right = HuffmanCode(current->RightChild(), target, code + "1");
+
+    // Find which path was taken
+    if ( left == -1 ) {
+        // Left path didn't find it, so it must be the right path:
+        code = code + "1";
+        return 1;
+    } else {
+        // Left path found it
+        code = code + "0";
+        return 1;
+    }
 }
 
 
