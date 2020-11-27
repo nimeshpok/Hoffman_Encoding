@@ -8,17 +8,6 @@
 
 #include "Huffman.hpp"
 
-Node::Node() {
-    key = -1;
-    freq = 1e10;
-    left = NULL;
-    right = NULL;
-}
-
-Node::~Node() {}
-
-/* *************************************************** HUFFMAN CODE USING BINARYHEAP *************************************************** */
-
 Huffman_BinaryHeap::Huffman_BinaryHeap(int len) {
     length = len;
     count = 0;
@@ -65,8 +54,6 @@ void Huffman_BinaryHeap::HuffmanTree(Node** extNode) {
     internalNode[j]->freq = internalNode[j]->left->freq + internalNode[j]->right->freq;
     
     root = internalNode[j];
-
-    //if (j+1 != length) throw "Inside Huffman_BinaryHeap::HuffmanTree()... Internal node count mismatch!";
 }
 
 int Huffman_BinaryHeap::HuffmanCode(Node* current, Node* target, std::string code) {
@@ -75,30 +62,18 @@ int Huffman_BinaryHeap::HuffmanCode(Node* current, Node* target, std::string cod
     std::size_t length = code.copy(current->HuffmanCode, code.length(), 0);
     current->HuffmanCode[length]='\0';
 
-    if (current == target) {
-        // Found target
-        return 1;
-    }
+    if (current == target) return 1;
 
-    // Check if end-node
-    if (current->LeftChild() == NULL && current->RightChild() == NULL) {
-        // Is an end node
-        return -1;
-    }
+    if (current->LeftChild() == NULL && current->RightChild() == NULL) return -1;
 
-    // Try left
     int left = HuffmanCode(current->LeftChild(), target, code + "0");
-
-    // Try right
     int right = HuffmanCode(current->RightChild(), target, code + "1");
 
-    // Find which path was taken
-    if ( left == -1 ) {
-        // Left path didn't find it, so it must be the right path:
+    if (left == -1) {
         code = code + "1";
         return 1;
-    } else {
-        // Left path found it
+    }
+    else {
         code = code + "0";
         return 1;
     }
